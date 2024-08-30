@@ -1,0 +1,2 @@
+pkg=installed.packages()
+pkg
