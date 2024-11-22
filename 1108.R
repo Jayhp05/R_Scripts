@@ -138,6 +138,12 @@ longlat
 df.PM10 = merge(x=df.region, y=longlat, by="NAME", all=TRUE)
 df.PM10
 
+# df.PM10이 long, lat 컬럼이 좌표 정보를 담고 있다면
+################################################################
+df.PM10 = st_as_sf(df.PM10, coords = c("long", "lat"), crs = 4326)
+df.PM10 = st_transform(df.PM10, st_crs(map))
+################################################################
+
 library(ggplot2)
 total_longlat
 
@@ -155,4 +161,13 @@ ggplot() +   # 주석 단축키 = ctrl + shift + c
              shape=21, color="black", fill="red", alpha=0.3) +
   theme(legend.position = "none") +
   labs(title = "PM10 농도 분포", x="경도", y="위도")
-  
+
+ggplot() +   # 주석 단축키 = ctrl + shift + c
+   geom_sf(data=map,
+           fill="white",
+           alpha=0.5,
+           color="black") +
+  geom_point(data = df.PM10, aes(x=coordinates(geometry)[, 1], y=st_coordinates(geometry)[, 2], size = PM10),
+             color="red", alpha=0.3) +
+  theme(legend.position = "none") +
+  labs(title = "PM10 농도 분포", x="경도", y="위도")
